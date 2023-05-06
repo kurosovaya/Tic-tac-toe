@@ -3,6 +3,8 @@ from random import randint
 
 class Player:
 
+    sid = None
+
     def __init__(self, name: str):
 
         self.player_id = randint(10000, 99999)
@@ -56,6 +58,11 @@ class Game:
         else:
             return False
         return True
+
+    @property
+    def game_ready(self):
+
+        return bool(self.player_one and self.player_two)
 
     def draw(self):
 

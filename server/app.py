@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
-from flask_sock import Sock
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from main import Game, Player
+from flask_cors import CORS
 
 app = Flask(__name__)
-sock = Sock(app)
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
+CORS(app)
 games = dict()
 players = dict()
 
@@ -15,11 +17,38 @@ def create_game():
     return jsonify(dict(game_id=game.game_id))
 
 
-@sock.route("/echo")
+@socketio.on("echo")
 def echo(ws):
-    while True:
-        data = ws.receive()
-        ws.send(data)
+    print('received message: ' + ws)
+    emit(ws, json=True)
+
+
+@socketio.on("Хуй соси")
+def echo(ws):
+    print('received message: ' + ws)
+    emit(ws, json=True)
+
+
+@socketio.on('connect_to_game')
+def test_connect(data):
+
+    game_id = int(data['game_id'])
+    player_id = int(data['player_id'])
+
+    room = game_id
+    join_room(room)
+    player = players[player_id]
+    player.sid = request.sid
+    game = games[game_id]
+    game.add_player(player)
+    emit("connected_to_game", json=True, to=game_id)
+    if game.game_ready:
+        emit("game_ready", to=game_id)
+
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print('Client disconnected')
 
 
 @app.route("/move", methods=["POST"])
@@ -37,19 +66,6 @@ def move():
     return jsonify(dict(game_board=game.game_board))
 
 
-@app.route("/connect_to_game")
-def connect_to_game():
-    data = request.json
-
-    game_id = data.game_id
-    player_id = data.player_id
-
-    player = players[player_id]
-
-    games[game_id].add_player(player)
-    # TODO response
-
-
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
@@ -60,4 +76,4 @@ def login():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    socketio.run(app, allow_unsafe_werkzeug=True)

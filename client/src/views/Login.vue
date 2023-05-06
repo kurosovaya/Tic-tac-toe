@@ -1,5 +1,6 @@
 <script>
 import axios from "axios"
+import store from "./store"
 
 // 
 // const router = useRouter()
@@ -16,9 +17,10 @@ methods: {
         let body = {"login": this.login}
         axios.post("http://localhost:5000/login", body)
         .then(response => (response.data)).then(
-            data => {                
+            data => {
                 this.user_id = data.player_id,
-                this.$cookies.set("player_id", this.user_id)
+                store.player_id = this.user_id
+                $cookies.set("player_id", this.user_id)
                 this.$router.push({name: "Menu"})
             }
         )
