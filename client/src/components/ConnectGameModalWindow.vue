@@ -1,23 +1,24 @@
 <script setup>
 
-import { ref, defineProps } from "vue";
+import router from "@/router";
+import { defineProps, ref } from "vue";
 
-const inviteUrl = ref(window.location.href)
-
+const game_id = ref(null)
 const props = defineProps({
-    show: false
+    show: Boolean
 })
 
-function copyURL() {
-    navigator.clipboard.writeText(inviteUrl.value);
+function connectToGame() {
+    router.push({name: 'game', params: { id: game_id.value }})
 }
 </script>
 
 <template>
-    <div v-if="show" class="modal">
+    <div v-if=show class="modal">
         <div class="modal-content">
-            <div class="copy_link">Invite: {{inviteUrl}}</div>
-            <button @click="copyURL">Copy</button>
+            <div class="copy_link">Enter game ID {{game_id}}</div>
+            <input v-model="game_id">
+            <button @click="connectToGame">Connect</button>
         </div>        
     </div>
 </template>

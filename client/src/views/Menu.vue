@@ -1,7 +1,21 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import router from "@/router";
 import axios from "axios"
+import store from "./store"
+import ConnectGameModalWindow from "@/components/ConnectGameModalWindow.vue";
 
+
+const showModal = ref(null)
+
+onMounted(() => {
+    if (!$cookies.isKey("player_id") && !store.player_id) {
+        router.push({name: "Login"})
+    }
+    if (!store.player_id) {
+        store.player_id = $cookies.get("player_id")
+    }
+})
 
 function createGame() {    
 
@@ -17,10 +31,10 @@ function createGame() {
 function connectToGame(game_id) {
     router.push({name: 'game', params: { id: game_id }})
 }
-
 </script>
 
 <template>
+    <ConnectGameModalWindow :show="showModal"></ConnectGameModalWindow>
     <button @click="createGame">Create game</button>
-    <button @click="connectToGame">Connect to game</button>
+    <button @click="showModal = true">Connect to game</button>
 </template>
