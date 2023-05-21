@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit, join_room
 from main import Game, Player
 from flask_cors import CORS
 
@@ -12,7 +12,10 @@ players = dict()
 
 @app.route("/create_game", methods=["POST"])
 def create_game():
-    game = Game()
+
+    data = request.json
+    player_creator = int(data['player_creator'])
+    game = Game(player_creator)
     games[game.game_id] = game
     return jsonify(dict(game_id=game.game_id))
 
@@ -51,19 +54,25 @@ def test_disconnect():
     print('Client disconnected')
 
 
-@app.route("/move", methods=["POST"])
-def move():
-    data = request.json
-    game_id = data.get("game_id")
+@socketio.on("check_move")
+def move(data):
+    game_id = int(data.get("game_id"))
     player_id = data.get("player_id")
     x_axis = data.get("x_axis")
     y_axis = data.get("y_axis")
+    game: Game = games[game_id]
+    if game.move(x_axis, y_axis, player_id):
+        emit("make_move", (x_axis, y_axis, game.current_sight), to=game_id)
+        if game.check_end_game():
+            emit("end_game", (players[player_id].name), to=game_id)
 
-    game = games[int(game_id)]
 
-    game.move(x_axis, y_axis, "x")
+@socketio.on("restart_game")
+def restart_game(data):
 
-    return jsonify(dict(game_board=game.game_board))
+    game_id = data.get_id
+    game: Game = games[game_id]
+    game.next_round()
 
 
 @app.route("/login", methods=["POST"])
