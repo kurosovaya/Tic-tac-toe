@@ -13,16 +13,27 @@ class Player:
 
 class Game:
 
-    def __init__(self):
+    def __init__(self, player_creator):
 
         self.game_id = randint(10000, 99999)
         self.game_board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-        self.player_one = None
-        self.player_two = None
+        self.player_creator = player_creator
+        self.player_current_turn = player_creator
+        self.player_crosses = None
+        self.player_noughts = None
+        self.cross = "X"
+        self.nought = "O"
+        self.current_sight = self.nought
 
-    def move(self, x, y, val):
+    def move(self, x, y, player_id):
 
-        self.game_board[x][y] = val
+        if player_id == self.player_current_turn:
+            self.game_board[x][y] = self.cross if player_id == self.player_crosses.player_id else self.nought
+            self.player_current_turn = self.player_noughts.player_id if player_id == self.player_crosses.player_id else self.player_crosses.player_id
+            self.current_sight = self.cross if self.current_sight == self.nought else self.nought
+            return True
+        else:
+            return False
 
     def check_end_game(self):
 
@@ -51,18 +62,23 @@ class Game:
 
     def add_player(self, player):
 
-        if self.player_one is None:
-            self.player_one = player
-        elif self.player_two is None:
-            self.player_two = player
+        if self.player_crosses is None:
+            self.player_crosses = player
+        elif self.player_noughts is None:
+            self.player_noughts = player
         else:
             return False
         return True
 
+    def swap_players(self, player_one="X", player_two="O"):
+
+        self.player_one = player_one
+        self.player_two = player_two
+
     @property
     def game_ready(self):
 
-        return bool(self.player_one and self.player_two)
+        return bool(self.player_crosses and self.player_noughts)
 
     def draw(self):
 
@@ -71,6 +87,9 @@ class Game:
                 print(self.game_board[i][j], end=" | ")
             print()
 
+    def next_round(self):
+
+        self.game_board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 # game = Game()
 

@@ -4,25 +4,18 @@ export default{
     props: {
         x: Number,
         y: Number,
-    },
-    data() {
-        return {            
-            cell_value: null,
-        }
+        value: String
     },
     methods: {
         make_move() {
-            this.$emit("make_move", this.x, this.y, this)
-        },
-        mark() {
-            this.cell_value = "O"
+            this.$emit("make_move", this.x, this.y)
         }
     }
 }
 </script>
 
 <template>
-    <button @click="make_move" class="cell_button">{{cell_value}}</button>
+    <button @click="make_move" class="cell_button">{{value}}</button>
 </template>
 
 <style scoped>

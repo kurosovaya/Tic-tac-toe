@@ -19,7 +19,8 @@ onMounted(() => {
 
 function createGame() {    
 
-    axios.post("http://localhost:5000/create_game")
+    let body = {player_creator: store.player_id}    
+    axios.post("http://localhost:5000/create_game", body)
     .then(response => (response.data)).then(
         data => {
             let game_id = data.game_id
