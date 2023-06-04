@@ -70,9 +70,36 @@ def move(data):
 @socketio.on("restart_game")
 def restart_game(data):
 
-    game_id = data.get_id
+    game_id = int(data.get("game_id"))
     game: Game = games[game_id]
     game.next_round()
+    emit("restart_game", to=game_id)
+
+
+@socketio.on("get_field")
+def get_field(data):
+    game_id = int(data.get("game_id"))
+    game: Game = games[game_id]
+    return game.game_board
+
+
+@socketio.on("get_chat_history")
+def get_chat_history(data):
+    game_id = int(data.get("game_id"))
+    game: Game = games[game_id]
+    return game.messages
+
+
+@socketio.on("send_message")
+def send_message(data):
+    game_id = int(data.get("game_id"))
+    message = data.get("message")
+    time = data.get("time")
+    player_id = data.get("player_id")
+    player_name = players[player_id].name
+    game: Game = games[game_id]
+    game.messages.append({"player_name": player_name, "message": message, "time": time})
+    emit("get_message", (player_name, message, time), to=game_id)
 
 
 @app.route("/login", methods=["POST"])
