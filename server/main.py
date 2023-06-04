@@ -24,13 +24,14 @@ class Game:
         self.cross = "X"
         self.nought = "O"
         self.current_sight = self.nought
+        self.messages = list()
 
     def move(self, x, y, player_id):
 
         if player_id == self.player_current_turn:
-            self.game_board[x][y] = self.cross if player_id == self.player_crosses.player_id else self.nought
-            self.player_current_turn = self.player_noughts.player_id if player_id == self.player_crosses.player_id else self.player_crosses.player_id
             self.current_sight = self.cross if self.current_sight == self.nought else self.nought
+            self.game_board[x][y] = self.current_sight
+            self.player_current_turn = self.player_noughts.player_id if player_id == self.player_crosses.player_id else self.player_crosses.player_id
             return True
         else:
             return False
@@ -90,6 +91,8 @@ class Game:
     def next_round(self):
 
         self.game_board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.player_crosses, self.player_noughts = self.player_noughts, self.player_crosses
+        self.current_sight = self.nought
 
 # game = Game()
 
