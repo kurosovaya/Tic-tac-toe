@@ -37,11 +37,11 @@ function connectToGame() {
 
 .modal-content {
   background-color: #181616;
-  margin: 20% auto; /* 15% from the top and centered */
+  margin: 20% auto;
   padding: 20px;
   border: 1px solid #f8f8f8f8;
   width: 25%;
-  height: 15%; /* Could be more or less, depending on screen size */
+  height: 15%;
 }
 
 .copy_link {

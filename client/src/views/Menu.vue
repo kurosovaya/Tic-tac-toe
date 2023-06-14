@@ -6,31 +6,30 @@ import store from "./store"
 import ConnectGameModalWindow from "@/components/ConnectGameModalWindow.vue";
 
 
-const showModal = ref(null)
+const showModal = ref(false)
 
 onMounted(() => {
     if (!$cookies.isKey("player_id") && !store.player_id) {
-        router.push({name: "Login"})
+        router.push({ name: "Login" })
     }
     if (!store.player_id) {
         store.player_id = $cookies.get("player_id")
     }
 })
 
-function createGame() {    
-
-    let body = {player_creator: store.player_id}    
+function createGame() {
+    let body = { player_creator: store.player_id }
     axios.post("http://localhost:5000/create_game", body)
-    .then(response => (response.data)).then(
-        data => {
-            let game_id = data.game_id
-            connectToGame(game_id)
-        }
-    )
+        .then(response => (response.data)).then(
+            data => {
+                let game_id = data.game_id
+                connectToGame(game_id)
+            }
+        )
 }
 
 function connectToGame(game_id) {
-    router.push({name: 'game', params: { id: game_id }})
+    router.push({ name: 'game', params: { id: game_id } })
 }
 </script>
 
