@@ -10,6 +10,15 @@ games = dict()
 players = dict()
 
 
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    name = data.get("login")
+    player = Player(name)
+    players[player.player_id] = player
+    return jsonify(dict(player_id=player.player_id))
+
+
 @app.route("/create_game", methods=["POST"])
 def create_game():
 
@@ -18,18 +27,6 @@ def create_game():
     game = Game(player_creator)
     games[game.game_id] = game
     return jsonify(dict(game_id=game.game_id))
-
-
-@socketio.on("echo")
-def echo(ws):
-    print('received message: ' + ws)
-    emit(ws, json=True)
-
-
-@socketio.on("Хуй соси")
-def echo(ws):
-    print('received message: ' + ws)
-    emit(ws, json=True)
 
 
 @socketio.on('connect_to_game')
@@ -100,15 +97,6 @@ def send_message(data):
     game: Game = games[game_id]
     game.messages.append({"player_name": player_name, "message": message, "time": time})
     emit("get_message", (player_name, message, time), to=game_id)
-
-
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.json
-    name = data.get("login")
-    player = Player(name)
-    players[player.player_id] = player
-    return jsonify(dict(player_id=player.player_id))
 
 
 if __name__ == '__main__':

@@ -1,21 +1,20 @@
-<script>
+<script setup>
 
-export default{
-    props: {
-        x: Number,
-        y: Number,
-        value: String
-    },
-    methods: {
-        make_move() {
-            this.$emit("make_move", this.x, this.y)
-        }
-    }
+const props = defineProps({
+    x: Number,
+    y: Number,
+    value: String
+})
+
+const emit = defineEmits(["makeMove"])
+
+function makeMove() {
+    emit("makeMove", props.x, props.y)
 }
 </script>
 
 <template>
-    <button @click="make_move" class="cell_button">{{value}}</button>
+    <button @click="makeMove" class="cell_button">{{ value }}</button>
 </template>
 
 <style scoped>
