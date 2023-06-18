@@ -34,7 +34,7 @@ function reset_field() {
     }
 }
 
-function make_move(x, y) {
+function makeMove(x, y) {
     let body = { "x_axis": x, "y_axis": y, "game_id": store.game_id, "player_id": store.player_id }
     socketInstance.emit("check_move", body)
 }
@@ -45,7 +45,7 @@ function make_move(x, y) {
     <div class="board">
         <template v-for="rowList in cellsList">
             <BoardCell v-for="(cell_data, index) in rowList" :key="`cell_${index}`" :x="cell_data.x" :y="cell_data.y"
-                :value="cell_data.cell_value" @make_move="make_move"></BoardCell>
+                :value="cell_data.cell_value" @makeMove="makeMove"></BoardCell>
         </template>
     </div>
 </template>

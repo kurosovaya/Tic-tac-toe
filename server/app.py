@@ -4,7 +4,7 @@ from main import Game, Player
 from flask_cors import CORS
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
+socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 games = dict()
 players = dict()
@@ -100,4 +100,4 @@ def send_message(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, allow_unsafe_werkzeug=True)
+    socketio.run(app, allow_unsafe_werkzeug=True, host='0.0.0.0', port=5000)

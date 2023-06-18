@@ -1,7 +1,7 @@
 <script setup>
 
 import router from "@/router";
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 
 const game_id = ref(null)
 const props = defineProps({

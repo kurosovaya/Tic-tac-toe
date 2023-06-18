@@ -9,7 +9,7 @@ const login = ref("")
 
 function loginUser() {
     let body = { "login": login.value }
-    axios.post("http://localhost:5000/login", body)
+    axios.post("/login", body)
         .then(response => (response.data)).then(
             data => {
                 store.player_id = data.player_id
