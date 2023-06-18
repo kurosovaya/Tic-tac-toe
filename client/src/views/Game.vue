@@ -9,42 +9,42 @@ import socket from "@/socket.io"
 import store from "./store"
 
 
-let player_id = null
-const game_id = ref("")
+let playerId = null
+const gameId = ref("")
 const route = useRoute()
 const showDialog = ref(true)
 const socketInstance = socket
-const emit = defineEmits("make_move")
 
 onMounted(() => {
-    if (!$cookies.isKey("player_id") && !store.player_id) {
+    if (!$cookies.isKey("playerId") && !store.playerId) {
         router.push({ name: "Login" })
     }
-    if (!store.player_id) {
-        store.player_id = $cookies.get("player_id")
+    if (!store.playerId) {
+        store.playerId = $cookies.get("playerId")
     }
 
-    player_id = store.player_id
+    playerId = store.playerId
 
-    if (!player_id) {
+    if (!playerId) {
         router.push({ name: "Login" })
     }
-    game_id.value = route.params.id
-    store.game_id = route.params.id
+    gameId.value = route.params.id
+    store.gameId = route.params.id
 
 
-    socketInstance.emit('connect_to_game', { "game_id": game_id.value, "player_id": player_id }, (response) => { console.log(response) })
+    socketInstance.emit('connect_to_game', { "game_id": gameId.value, "player_id": playerId }, (response) => { console.log(response) })
     socketInstance.on('connected_to_game', () => { console.log("player connected") });
     socketInstance.on('game_ready', () => { showDialog.value = false; console.log("game ready") })
     socketInstance.on("end_game", (player_name) => { alert(`END GAME ${player_name} WIN`) })
+    socketInstance.on("draw", () => { alert("Draw") })
 
 })
 
-function restart_game() {
-    socketInstance.emit("restart_game", { "game_id": game_id.value, "player_id": player_id })
+function restartGame() {
+    socketInstance.emit("restart_game", { "game_id": gameId.value, "player_id": playerId })
 }
 
-function new_game() {
+function newGame() {
 
 }
 
@@ -54,9 +54,9 @@ function new_game() {
     <ModalWindow :show="showDialog"></ModalWindow>
     <div class="main">
         <div class="game">
-            <Board @make_move="make_move" />
-            <button @click="restart_game">Restart</button>
-            <button @click="new_game">New game</button>
+            <Board/>
+            <button @click="restartGame">Restart</button>
+            <!-- <button @click="newGame">New game</button> -->
             <div class="logo">Pluton-waffen.inc</div>
         </div>
         <Chat></Chat>

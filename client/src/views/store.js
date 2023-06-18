@@ -1,14 +1,14 @@
 import {reactive} from "vue"
 
 const store = reactive({
-    player_id_inner: null,
-    get player_id() {
-        return this.player_id_inner
+    playerIdInner: null,
+    get playerId() {
+        return this.playerIdInner
     },
-    set player_id(value) {
-        this.player_id_inner = Number(value)
+    set playerId(value) {
+        this.playerIdInner = Number(value)
     },
-    game_id: null
+    gameId: null
 })
 
 export default store

@@ -60,8 +60,11 @@ def move(data):
     game: Game = games[game_id]
     if game.move(x_axis, y_axis, player_id):
         emit("make_move", (x_axis, y_axis, game.current_sight), to=game_id)
-        if game.check_end_game():
+        game_status = game.check_end_game()
+        if game_status:
             emit("end_game", (players[player_id].name), to=game_id)
+        elif game_status is None:
+            emit("draw", to=game_id)
 
 
 @socketio.on("restart_game")

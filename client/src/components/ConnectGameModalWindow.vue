@@ -3,21 +3,21 @@
 import router from "@/router";
 import { ref } from "vue";
 
-const game_id = ref(null)
+const gameId = ref(null)
 const props = defineProps({
     show: Boolean
 })
 
 function connectToGame() {
-    router.push({name: 'game', params: { id: game_id.value }})
+    router.push({name: 'game', params: { id: gameId.value }})
 }
 </script>
 
 <template>
     <div v-if=show class="modal">
         <div class="modal-content">
-            <div class="copy_link">Enter game ID {{game_id}}</div>
-            <input v-model="game_id">
+            <div class="copy_link">Enter game ID {{gameId}}</div>
+            <input v-model="gameId">
             <button @click="connectToGame">Connect</button>
         </div>        
     </div>

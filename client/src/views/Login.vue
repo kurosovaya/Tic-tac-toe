@@ -12,8 +12,8 @@ function loginUser() {
     axios.post("/login", body)
         .then(response => (response.data)).then(
             data => {
-                store.player_id = data.player_id
-                $cookies.set("player_id", data.player_id)
+                store.playerId = data.player_id
+                $cookies.set("playerId", data.player_id)
                 router.push({ name: "Menu" })
             }
         )
