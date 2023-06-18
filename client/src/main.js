@@ -6,6 +6,6 @@ import axios from 'axios'
 
 import './assets/main.css'
 
-axios.defaults.baseURL = "http://localhost:5000"
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 createApp(App).use(router).use(VueCookies).mount('#app')

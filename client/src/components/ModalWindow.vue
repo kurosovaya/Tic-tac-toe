@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 
 const inviteUrl = ref(window.location.href)
 
