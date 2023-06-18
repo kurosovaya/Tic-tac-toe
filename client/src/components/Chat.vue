@@ -5,39 +5,39 @@ import socket from "@/socket.io"
 import { useRoute } from 'vue-router'
 
 const socketInstance = socket
-const message_input = ref("")
-const messages_array = ref([])
+const messageInput = ref("")
+const messagesArray = ref([])
 const route = useRoute()
 
 socketInstance.on("get_message", (player_name, message, time) => getMessage(player_name, message, time))
 
 onMounted(() => {
-     socketInstance.emit("get_chat_history", { "game_id": route.params.id }, (messages) => messages_array.value = messages)
+     socketInstance.emit("get_chat_history", { "game_id": route.params.id }, (messages) => messagesArray.value = messages)
 })
 
 function sendMessage() {
-     if (message_input.value) {
-          let local_time = new Date()
-          let local_time_str = `${local_time.getHours()}:${local_time.getMinutes()}`
+     if (messageInput.value) {
+          let localTime = new Date()
+          let localTimeStr = `${localTime.getHours()}:${localTime.getMinutes()}`
           socketInstance.emit("send_message", {
-               "game_id": store.game_id,
-               "message": message_input.value,
-               "time": local_time_str,
-               "player_id": store.player_id
+               "game_id": store.gameId,
+               "message": messageInput.value,
+               "time": localTimeStr,
+               "player_id": store.playerId
           })
-          message_input.value = ""
+          messageInput.value = ""
      }
 }
 
 function getMessage(player_name, message, time) {
-     messages_array.value.push({ "player_name": player_name, "message": message, "time": time })
+     messagesArray.value.push({ "player_name": player_name, "message": message, "time": time })
 }
 </script>
 
 <template>
      <div class="chat">
           <div class="messages">
-               <div v-for="message in messages_array" class="message">
+               <div v-for="message in messagesArray" class="message">
                     <span class="time">{{ `${message.time} ` }}</span>
                     <span>{{ message.player_name + ": " }}</span>
                     <span class="message_text"> {{ message.message }}</span>
@@ -45,7 +45,7 @@ function getMessage(player_name, message, time) {
                <div id="anchor"></div>
           </div>
           <div class="input">
-               <input class="input_text" @keydown.enter="sendMessage" v-model="message_input">
+               <input class="input_text" @keydown.enter="sendMessage" v-model="messageInput">
                <button class="input_button" @click="sendMessage">Send</button>
           </div>
      </div>

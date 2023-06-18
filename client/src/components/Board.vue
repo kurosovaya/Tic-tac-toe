@@ -10,11 +10,11 @@ const socketInstance = socket
 const route = useRoute()
 
 socketInstance.on('make_move', (x_axis, y_axis, sight) => { cellsList.value[x_axis][y_axis].cell_value = sight })
-socketInstance.on("restart_game", () => (reset_field()))
-socketInstance.emit("get_field", { "game_id": route.params.id }, (response) => { set_field(response) })
+socketInstance.on("restart_game", () => (resetField()))
+socketInstance.emit("get_field", { "game_id": route.params.id }, (response) => { setField(response) })
 
 
-function set_field(field) {
+function setField(field) {
     for (let x = 0; x < 3; x++) {
         let temp_array = []
         for (let y = 0; y < 3; y++) {
@@ -24,7 +24,7 @@ function set_field(field) {
     }
 }
 
-function reset_field() {
+function resetField() {
     for (let x = 0; x < 3; x++) {
         let temp_array = []
         for (let y = 0; y < 3; y++) {
@@ -35,7 +35,7 @@ function reset_field() {
 }
 
 function makeMove(x, y) {
-    let body = { "x_axis": x, "y_axis": y, "game_id": store.game_id, "player_id": store.player_id }
+    let body = { "x_axis": x, "y_axis": y, "game_id": store.gameId, "player_id": store.playerId }
     socketInstance.emit("check_move", body)
 }
 

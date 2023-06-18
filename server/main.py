@@ -25,10 +25,11 @@ class Game:
         self.nought = "O"
         self.current_sight = self.nought
         self.messages = list()
+        self.game_end = False
 
     def move(self, x, y, player_id):
 
-        if player_id == self.player_current_turn:
+        if self.game_board[x][y] == 0 and player_id == self.player_current_turn and not self.game_end:
             self.current_sight = self.cross if self.current_sight == self.nought else self.nought
             self.game_board[x][y] = self.current_sight
             self.player_current_turn = self.player_noughts.player_id if player_id == self.player_crosses.player_id else self.player_crosses.player_id
@@ -44,6 +45,12 @@ class Game:
                     return False
             return True
 
+        def check_draw(board):
+            if 0 in set([x for j in board for x in j]):
+                return False
+            else:
+                return True
+
         check_rows = []
 
         for i in range(len(self.game_board)):
@@ -58,7 +65,13 @@ class Game:
 
         for row in check_rows:
             if check_win(row):
+                self.game_end = True
                 return True
+
+        if check_draw(self.game_board):
+            self.game_end = True
+            return None
+
         return False
 
     def add_player(self, player):
@@ -93,6 +106,7 @@ class Game:
         self.game_board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         self.player_crosses, self.player_noughts = self.player_noughts, self.player_crosses
         self.current_sight = self.nought
+        self.game_end = False
 
 # game = Game()
 
