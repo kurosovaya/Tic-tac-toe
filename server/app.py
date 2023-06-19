@@ -3,6 +3,8 @@ from flask_socketio import SocketIO, emit, join_room
 from main import Game, Player
 from flask_cors import CORS
 
+from datetime import datetime
+
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
@@ -30,7 +32,7 @@ def create_game():
 
 
 @socketio.on('connect_to_game')
-def test_connect(data):
+def connect_to_game(data):
 
     game_id = int(data['game_id'])
     player_id = int(data['player_id'])

@@ -12,25 +12,32 @@ const route = useRoute()
 socketInstance.on("get_message", (player_name, message, time) => getMessage(player_name, message, time))
 
 onMounted(() => {
-     socketInstance.emit("get_chat_history", { "game_id": route.params.id }, (messages) => messagesArray.value = messages)
+     socketInstance.emit("get_chat_history", { "game_id": route.params.id }, (messages) => { 
+          messages.forEach(message => {getMessage(message.player_name, message.message, message.time)}); 
+     })
 })
 
 function sendMessage() {
      if (messageInput.value) {
-          let localTime = new Date()
-          let localTimeStr = `${localTime.getHours()}:${localTime.getMinutes()}`
+          let localTime = new Date()          
           socketInstance.emit("send_message", {
                "game_id": store.gameId,
                "message": messageInput.value,
-               "time": localTimeStr,
+               "time": localTime.toISOString(),
                "player_id": store.playerId
           })
           messageInput.value = ""
      }
 }
 
+function convertTime(time) {
+     let local_time = new Date(time)
+     return `${("0" + local_time.getHours()).slice(-2)}:${("0" + local_time.getMinutes()).slice(-2)}`
+}
+
+
 function getMessage(player_name, message, time) {
-     messagesArray.value.push({ "player_name": player_name, "message": message, "time": time })
+     messagesArray.value.push({ "player_name": player_name, "message": message, "time": convertTime(time) })
 }
 </script>
 
@@ -39,7 +46,7 @@ function getMessage(player_name, message, time) {
           <div class="messages">
                <div v-for="message in messagesArray" class="message">
                     <span class="time">{{ `${message.time} ` }}</span>
-                    <span>{{ message.player_name + ": " }}</span>
+                    <span class="player_name">{{ message.player_name + ": " }}</span>
                     <span class="message_text"> {{ message.message }}</span>
                </div>
                <div id="anchor"></div>
@@ -67,7 +74,6 @@ function getMessage(player_name, message, time) {
      right: 0;
      top: 0;
 }
-
 
 .messages {
      overflow: auto;
@@ -100,4 +106,9 @@ function getMessage(player_name, message, time) {
 
 .time {
      color: grey;
-}</style>
+}
+
+.player_name {
+     color: white;
+}
+</style>

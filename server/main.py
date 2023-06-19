@@ -78,7 +78,7 @@ class Game:
 
         if self.player_crosses is None:
             self.player_crosses = player
-        elif self.player_noughts is None:
+        elif self.player_noughts is None and self.player_crosses.player_id != player.player_id:
             self.player_noughts = player
         else:
             return False
