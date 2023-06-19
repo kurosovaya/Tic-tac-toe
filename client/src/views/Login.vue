@@ -22,7 +22,7 @@ function loginUser() {
 
 <template>
     <div class="login">
-        <input v-model="login">
+        <input @keydown.enter="loginUser" v-model="login">
         <button @click="loginUser">Log in</button>
     </div>
 </template>

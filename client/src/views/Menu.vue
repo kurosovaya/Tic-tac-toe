@@ -31,10 +31,14 @@ function createGame() {
 function connectToGame(gameId) {
     router.push({ name: 'game', params: { id: gameId } })
 }
+
+function closeDialog() {
+    showModal.value = false
+}
 </script>
 
 <template>
-    <ConnectGameModalWindow :show="showModal"></ConnectGameModalWindow>
+    <ConnectGameModalWindow :show="showModal" @closeDialog="closeDialog"></ConnectGameModalWindow>
     <button @click="createGame">Create game</button>
     <button @click="showModal = true">Connect to game</button>
 </template>
