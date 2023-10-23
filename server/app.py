@@ -3,8 +3,6 @@ from flask_socketio import SocketIO, emit, join_room
 from main import Game, Player
 from flask_cors import CORS
 
-from datetime import datetime
-
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
@@ -43,7 +41,7 @@ def connect_to_game(data):
     player.sid = request.sid
     game = games[game_id]
     game.add_player(player)
-    emit("connected_to_game", json=True, to=game_id)
+    emit("send_system_message", f"Player {players[player_id].name} connected to game", to=game_id)
     if game.game_ready:
         emit("game_ready", to=game_id)
 
@@ -98,10 +96,32 @@ def send_message(data):
     message = data.get("message")
     time = data.get("time")
     player_id = data.get("player_id")
+    message_type = data.get("message_type")
     player_name = players[player_id].name
     game: Game = games[game_id]
-    game.messages.append({"player_name": player_name, "message": message, "time": time})
-    emit("get_message", (player_name, message, time), to=game_id)
+    game.messages.append({"player_name": player_name,
+                          "message": message,
+                          "time": time,
+                          "message_type": message_type})
+    emit("get_message", {"player_name": player_name,
+                         "message": message,
+                         "time": time,
+                         "message_type": message_type}, to=game_id)
+
+
+@socketio.on("send_system_message")
+def send_system_message(data):
+    game_id = int(data.get("game_id"))
+    message = data.get("message")
+    time = data.get("time")
+    message_type = data.get("message_type")
+    game: Game = games[game_id]
+    game.messages.append({"message": message,
+                          "time": time,
+                          "message_type": message_type})
+    emit("get_message", {"message": message,
+                         "time": time,
+                         "message_type": message_type}, to=game_id)
 
 
 if __name__ == '__main__':
