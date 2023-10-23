@@ -21,6 +21,7 @@ class Game:
         self.player_current_turn = player_creator
         self.player_crosses = None
         self.player_noughts = None
+        self.spectators = []
         self.cross = "X"
         self.nought = "O"
         self.current_sight = self.nought
@@ -81,8 +82,7 @@ class Game:
         elif self.player_noughts is None and self.player_crosses.player_id != player.player_id:
             self.player_noughts = player
         else:
-            return False
-        return True
+            self.spectators.append(Player)
 
     def swap_players(self, player_one="X", player_two="O"):
 
