@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Board from "../components/Board.vue"
+import PlayersList from "../components/PlayersList.vue"
 import Chat from "@/components/Chat.vue"
 import ModalWindow from "@/components/ModalWindow.vue"
 import router from "@/router";
@@ -33,7 +34,6 @@ onMounted(() => {
 
 
     socketInstance.emit('connect_to_game', { "game_id": gameId.value, "player_id": playerId }, (response) => { console.log(response) })
-    socketInstance.on('connected_to_game', () => { console.log("player connected") });
     socketInstance.on('game_ready', () => { showDialog.value = false; console.log("game ready") })
     socketInstance.on("end_game", (player_name) => { alert(`END GAME ${player_name} WIN`) })
     socketInstance.on("draw", () => { alert("Draw") })
@@ -44,17 +44,15 @@ function restartGame() {
     socketInstance.emit("restart_game", { "game_id": gameId.value, "player_id": playerId })
 }
 
-function newGame() {
-
-}
 
 </script>
 
 <template>
     <ModalWindow :show="showDialog"></ModalWindow>
-    <div class="main">
+    <div class="main">        
+        <Board/>
         <div class="game">
-            <Board/>
+            <PlayersList/>
             <button @click="restartGame">Restart</button>
             <!-- <button @click="newGame">New game</button> -->
             <div class="logo">Pluton-waffen.inc</div>

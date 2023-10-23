@@ -9,13 +9,24 @@ const messageInput = ref("")
 const messagesArray = ref([])
 const route = useRoute()
 
-socketInstance.on("get_message", (player_name, message, time) => getMessage(player_name, message, time))
+socketInstance.on("get_message", (message) => getMessage(message))
+socketInstance.on("send_system_message", (text) => sendSystemMessage(text));
 
 onMounted(() => {
      socketInstance.emit("get_chat_history", { "game_id": route.params.id }, (messages) => { 
-          messages.forEach(message => {getMessage(message.player_name, message.message, message.time)}); 
+          messages.forEach(message => getMessage(message)); 
      })
 })
+
+function sendSystemMessage(message) {
+     let localTime = new Date()
+     socketInstance.emit("send_system_message", {
+               "game_id": store.gameId,
+               "message": message,
+               "time": localTime.toISOString(),
+               "message_type": 'system_message'
+          })
+}
 
 function sendMessage() {
      if (messageInput.value) {
@@ -24,7 +35,8 @@ function sendMessage() {
                "game_id": store.gameId,
                "message": messageInput.value,
                "time": localTime.toISOString(),
-               "player_id": store.playerId
+               "player_id": store.playerId,
+               "message_type": 'user_message'
           })
           messageInput.value = ""
      }
@@ -36,8 +48,8 @@ function convertTime(time) {
 }
 
 
-function getMessage(player_name, message, time) {
-     messagesArray.value.push({ "player_name": player_name, "message": message, "time": convertTime(time) })
+function getMessage(message) {
+     messagesArray.value.push({ "player_name": message.player_name, "message": message.message, "time": convertTime(message.time), "message_type": message.message_type })
 }
 </script>
 
@@ -45,9 +57,9 @@ function getMessage(player_name, message, time) {
      <div class="chat">
           <div class="messages">
                <div v-for="message in messagesArray" class="message">
-                    <span class="time">{{ `${message.time} ` }}</span>
-                    <span class="player_name">{{ message.player_name + ": " }}</span>
-                    <span class="message_text"> {{ message.message }}</span>
+                    <span v-if="message.time" class="time">{{ `${message.time} ` }}</span>
+                    <span v-if="message.player_name" class="player_name">{{ message.player_name + ": " }}</span>
+                    <span v-if="message.message" :class="{message_text: message.message_type==='user_message', message_system_text: message.message_type==='system_message'}"> {{ message.message }}</span>
                </div>
                <div id="anchor"></div>
           </div>
@@ -87,6 +99,11 @@ function getMessage(player_name, message, time) {
 
 .message_text {
      word-wrap: break-word;
+}
+
+.message_system_text {
+     color: rgba(255, 255, 255, 0.253);
+     font-style: italic;
 }
 
 .input {
