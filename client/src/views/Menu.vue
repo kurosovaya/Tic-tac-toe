@@ -41,4 +41,5 @@ function closeDialog() {
     <ConnectGameModalWindow :show="showModal" @closeDialog="closeDialog"></ConnectGameModalWindow>
     <button @click="createGame">Create game</button>
     <button @click="showModal = true">Connect to game</button>
+    <button @click="router.push({ name: 'singleplayer' })">Play vs Computer</button>
 </template>

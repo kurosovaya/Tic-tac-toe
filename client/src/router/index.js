@@ -3,6 +3,7 @@ import { createRouter, createWebHistory} from 'vue-router'
 import Home from "@/views/Login.vue"
 import Game from "@/views/Game.vue"
 import Menu from "@/views/Menu.vue"
+import SinglePlayer from "@/views/SinglePlayer.vue"
 
 
 const router = createRouter({
@@ -10,7 +11,8 @@ const router = createRouter({
     routes: [
         {path: "/", name: "Login", component: Home},
         {path: "/game/:id", name: "game", component: Game},
-        {path: "/menu", name: "Menu", component: Menu}
+        {path: "/menu", name: "Menu", component: Menu},
+        {path: "/singleplayer", name: "singleplayer", component: SinglePlayer}
     ]
 })
 
